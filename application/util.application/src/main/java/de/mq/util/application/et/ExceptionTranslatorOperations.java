@@ -1,10 +1,11 @@
 package de.mq.util.application.et;
 
-import com.mscharhag.et.ExceptionTranslator;
-import com.mscharhag.et.ReturningTryBlock;
-import com.mscharhag.et.TryBlock;
+import de.mq.util.application.et.support.DefaultExceptionTranslatorConfigurer;
+import de.mq.util.application.et.support.ExceptionTranslatorConfigurer;
+
+
 /**
- * 
+ * Operationen fuer ExceptionTranslations -> Checked nach Runtime
  * @author mq
  *
  */
@@ -61,7 +62,7 @@ public interface ExceptionTranslatorOperations {
 		/**
 		 * Fuehrt eine Operation (z.B. Legacy-Code)  aus und gibt ein Ergbnis zurueck
 		 * @param closeable ein {@link AutoCloseable}  als Parameter
-		 * @return ein Erbnis vom Type T
+		 * @return ein Ergebnis vom Type T
 		 * @throws Exception eine Beliebige Checked Exception 
 		 */
 		T run(final A closeable) throws Exception ; 
@@ -99,10 +100,97 @@ public interface ExceptionTranslatorOperations {
 		A open() throws Exception ;
 	}
 
+	/**
+	 * Ein einfacher CodeBlock zwischen try catch
+	 * @author mq
+	 *
+	 */
+	@FunctionalInterface
+	public interface TryBlock {
+
+		/**
+		 * Den CodeBlock ausfuehren
+		 * @throws Exception
+		 */
+	    void run() throws Exception;
+
+	}
+
+	/**
+	 * Ein einfacher CodeBlock zwischen try catch mit Ergebnis
+	 * @author mq
+	 *
+	 * @param <T> Ergebnis des CodeBlocks
+	 */
+	public interface ReturningTryBlock<T> {
+
+		/**
+		 * Den Codeblock ausfuehren
+		 * @return das Erbnis des Blocks
+		 * @throws Exception die dabei auftretende CheckedException aus der Steinzeit, post TRex mortem 
+		 */
+	    T run() throws Exception;
+	}
 	
 
+	/**
+	 * Eine ExceptionTranslator 
+	 * @author mq
+	 *
+	 */
+	public interface ExceptionTranslator {
+
+		/**
+		 * Einfachen CodeBlock zwischen try catch ausfuehren
+		 * @param tryBlock
+		 */
+	    void withTranslation(final TryBlock tryBlock);
+
+	    /**
+	     * Einfachen CodeBlock zwischen try catch ausfuehren mit Returnwert ausfuehren
+	     * @param invokable der CodeBlock
+	     * @return das Ergebnis
+	     */
+	    <T> T withReturningTranslation(final ReturningTryBlock<T> invokable);
+
+	    /**
+	     * Erzeugt einen  @{ExceptionTranslatorConfigurer}
+	     * @return der  @{ExceptionTranslatorConfigurer}
+	     */
+	    ExceptionTranslatorConfigurer newConfiguration();
+
+	}
+	
 	
 
+
+/**
+ * Global factory that can be used to create new {@code ExceptionTranslator} configurations using
+ * {@code ET.newConfiguration()}.
+ * <p>Usage:
+ * <pre>
+ *     ExceptionTranslator et = ET.newConfiguration()
+ *                                  // Exception translator configuration
+ *                                  .translate(FooException.class).to(MyRuntimeException.class)
+ *                                  .translate(BazException.class).using(OtherException::new)
+ *                                  .translate(BarException.class).using((message, exception) -&gt; { .. })
+ *                                  .done(); // Create ExceptionTranslator from configuration
+ * </pre>
+ */
+public  interface ET {
+
+  
+
+    /**
+     * Returns a new {@link ExceptionTranslatorConfigurer} that can be used to create a new
+     * {@link ExceptionTranslator} configuration.
+     * @return an {@link ExceptionTranslatorConfigurer}, never {@code null}
+     */
+    public static ExceptionTranslatorConfigurer newConfiguration() {
+        return new DefaultExceptionTranslatorConfigurer();
+    }
+
+}
 	
 
 }

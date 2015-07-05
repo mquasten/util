@@ -12,18 +12,13 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.9</junit.version>
+		<junit.version>4.12</junit.version>
 		<spring.version>4.2.0.RC1</spring.version>
 	</properties>
 
 	<dependencies>
 
-		<dependency>
-			<groupId>com.mscharhag</groupId>
-			<artifactId>et</artifactId>
-			<version>0.2.0</version>
-		</dependency>
-
+		
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -71,6 +66,12 @@
 		</dependency>
 	</dependencies>
 
+	
+	
+	
+	
+	
+	
 	<repositories>
 
 
@@ -83,5 +84,63 @@
 
 
 	</repositories>
+	
+	
+	<build>
+	<plugins>
+	
+	
+		
+			
+			
+			
+
+
+			<plugin>
+
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.4.201502262128</version>
+
+				<configuration>
+				    <excludes>
+        			<exclude>**/*DatabaseSetup.*</exclude>
+        			</excludes>
+    
+    				 
+					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						
+							
+						</goals>
+					
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>package</phase>
+						
+						<goals>
+							<goal>report</goal>
+							
+						</goals>
+					   
+					</execution>
+					
+				</executions>
+				
+			
+			</plugin>
+	
+	
+	
+	</plugins>
+	
+	</build>
 
 </project>
