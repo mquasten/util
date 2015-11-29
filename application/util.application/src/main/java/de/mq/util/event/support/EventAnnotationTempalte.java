@@ -7,11 +7,9 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-@Component
 class EventAnnotationTempalte implements EventAnnotationOperations {
 	
 	private Collection<Class<? extends Annotation>> qualifiers = new HashSet<>();
