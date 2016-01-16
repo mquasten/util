@@ -5,7 +5,7 @@ package de.mq.util.application.et.support;
  *
  */
 @FunctionalInterface
-interface TargetExceptionResolver {
+public interface TargetExceptionResolver {
 
     /**
      * Translates the passed exception to a {@code RuntimeException}.
